@@ -1,0 +1,66 @@
+bridges = []
+persistence_dir = "/var/lib/holochain-conductor"
+signing_service_uri = "http://localhost:9676"
+
+[[agents]]
+id = "host-agent"
+keystore_file = "/tmp/holo-keystore"
+name = "Host Agent"
+public_address = "HcSci4GyVQ93ecjpdvDsK5s7W9o3hf7pggw3tJMWmu9frfnpM6Ss5Xx7rjX8mrz"
+
+[[dnas]]
+file = "/nix/store/6xlihn88a2x45nkpdsmkn2jjpsplqvjg-holofuel/holofuel.dna.json"
+hash = "Qmd6you9MDEbCvU9bxTA5o7FH7XiMtGZSLdegHiG8D3jpp"
+id = "holofuel"
+
+[[instances]]
+agent = "host-agent"
+dna = "holofuel"
+id = "holofuel"
+
+[instances.storage]
+path = "/var/lib/holochain-conductor/holofuel-Qmd6you9MDEbCvU9bxTA5o7FH7XiMtGZSLdegHiG8D3jpp"
+type = "lmdb"
+
+[[interfaces]]
+admin = true
+id = "master-interface"
+
+[interfaces.driver]
+port = 42211
+type = "websocket"
+
+[[interfaces]]
+admin = false
+id = "internal-interface"
+
+[interfaces.driver]
+port = 42222
+type = "websocket"
+
+[[interfaces]]
+admin = false
+id = "admin-interface"
+
+[interfaces.driver]
+port = 42233
+type = "websocket"
+
+[[interfaces.instances]]
+id = "holofuel"
+
+[[interfaces]]
+admin = false
+id = "hosted-interface"
+
+[interfaces.driver]
+port = 42244
+type = "websocket"
+
+[logger]
+state_dump = false
+type = "info"
+
+[network]
+sim2h_url = "ws://public.sim2h.net:9000"
+type = "sim2h"
