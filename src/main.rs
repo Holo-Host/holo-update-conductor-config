@@ -35,12 +35,11 @@ fn main() -> Result<()> {
     // new-config gets updated with selected values from old-config
     new_config.update_with(&old_config);
 
-    // new-config is written into conductor-config.toml file
+    // new-config is written to stdout
     let new_config_toml = new_config
         .to_toml()
         .context("failed to serialize new_config to TOML")?;
-    std::fs::write(&config_path, &new_config_toml)
-        .context("failed to write new_config to config_path")?;
+    println!("{}", new_config_toml);
 
     // (in alpha) KV store HAPP2HOST is updated with values of all holo-hosted hApps
 
