@@ -1,0 +1,38 @@
+{
+    "holo-nixpkgs": {
+        "branch": "develop",
+        "description": "Modules, packages and profiles that drive Holo, Holochain, and HoloPortOS",
+        "homepage": "",
+        "owner": "Holo-Host",
+        "repo": "holo-nixpkgs",
+        "rev": "69ac37d15e17092270f6c26288313fc581a30f55",
+        "sha256": "0bh8v05f26hghy4xcrwxcaxd9sk2gijqm3n7as1md8n46klb0pql",
+        "type": "tarball",
+        "url": "https://github.com/Holo-Host/holo-nixpkgs/archive/69ac37d15e17092270f6c26288313fc581a30f55.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "niv": {
+        "branch": "master",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "f73bf8d584148677b01859677a63191c31911eae",
+        "sha256": "0jlmrx633jvqrqlyhlzpvdrnim128gc81q5psz2lpp2af8p8q9qs",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/niv/archive/f73bf8d584148677b01859677a63191c31911eae.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "master",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "1c951b1484ebf0efc2024dc5fad252bcefe5369b",
+        "sha256": "1dqia4yqsjd8r0q9ii79im0dyvna3ygks3f3g8pw6frs6nhj7p92",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/1c951b1484ebf0efc2024dc5fad252bcefe5369b.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

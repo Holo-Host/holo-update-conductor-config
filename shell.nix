@@ -1,3 +1,5 @@
-{ pkgs ? import <nixpkgs> { } }:
-with pkgs;
-mkShell { buildInputs = [ openssl pkg-config ]; }
+{ sources ? import ./nix/sources.nix { }
+, pkgs ? import sources.holo-nixpkgs { }
+, niv ? (import sources.niv { }).niv
+}:
+pkgs.mkShell { buildInputs = [ niv ]; }
