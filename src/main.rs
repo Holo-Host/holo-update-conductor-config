@@ -1,10 +1,13 @@
 mod types;
 
 use anyhow::{Context, Result};
-use std::io::{self, Read};
+use std::io::Read;
+use std::{env, fs, io};
 use types::Configuration;
 
 fn main() -> Result<()> {
+    let args: Vec<String> = env::args().collect();
+
     // Holochain settings are read from stdin into a struct new-config
     let mut input = String::new();
     io::stdin()
@@ -16,13 +19,13 @@ fn main() -> Result<()> {
     let config_path = new_config.persistence_dir.join("conductor-config.toml");
 
     // existing conductor-config.toml is loaded into struct old-config
-    let old_config =
-        std::fs::read_to_string(&config_path).with_context(|| {
-            format!(
-                "failed to read old config file at {}",
-                &config_path.display()
-            )
-        })?;
+    let old_config = &args[1];
+    let old_config = fs::read_to_string(&old_config).with_context(|| {
+        format!(
+            "failed to read old config file at {}",
+            &config_path.display()
+        )
+    })?;
     let old_config = Configuration::from_toml(&old_config)
         .context("failed to parse old_config")?;
 
