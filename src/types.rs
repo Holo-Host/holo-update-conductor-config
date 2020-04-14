@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
@@ -44,14 +44,22 @@ impl Configuration {
     /// Copy all DNA files to `persistence_dir` and update their `file` values.
     pub fn copy_dnas_to_persistence_dir(&mut self) -> Result<()> {
         for dna in self.dnas.iter_mut() {
-            let filename = &dna.file.file_name().ok_or(anyhow!(
-                "dna {} with path {} has no filename",
-                &dna.id,
-                &dna.file.display()
-            ))?;
+            let filename = &dna.file.file_name().with_context(|| {
+                format!(
+                    "dna {} with path {} has no filename",
+                    &dna.id,
+                    &dna.file.display()
+                )
+            })?;
             let to_path = self.persistence_dir.join(&filename);
 
-            fs::copy(&dna.file, &to_path)?;
+            fs::copy(&dna.file, &to_path).with_context(|| {
+                format!(
+                    "failed to copy {} to {}",
+                    &dna.file.display(),
+                    &to_path.display()
+                )
+            })?;
             dna.file = to_path;
         }
         Ok(())
@@ -108,7 +116,10 @@ impl Configuration {
             ureq::post("https://resolver.holohost.net/update/addHost")
                 .send_json(serde_json::to_value(&happ_urls)?);
         if response.error() {
-            return Err(anyhow!("request to resolver failed"));
+            return Err(anyhow!(
+                "request to resolver failed: {}",
+                response.status_line()
+            ));
         }
         Ok(())
     }
