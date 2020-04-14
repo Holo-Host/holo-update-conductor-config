@@ -1,8 +1,3 @@
-#![deny(missing_docs)]
-#![forbid(unsafe_code)]
-
-//! Most of the structs are copied from
-//! `holochain_core_types` and `holochain_conductor_lib`.
 mod types;
 
 use anyhow::{Context, Result};
