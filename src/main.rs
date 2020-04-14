@@ -16,16 +16,24 @@ fn main() -> Result<()> {
     let config_path = new_config.persistence_dir.join("conductor-config.toml");
 
     // existing conductor-config.toml is loaded into struct old-config
-    let old_config = std::fs::read_to_string(&config_path)
-        .context("failed to read old config file")?;
+    let old_config =
+        std::fs::read_to_string(&config_path).with_context(|| {
+            format!(
+                "failed to read old config file at {}",
+                &config_path.display()
+            )
+        })?;
     let old_config = Configuration::from_toml(&old_config)
         .context("failed to parse old_config")?;
 
     // all the DNAs in new-config are copied from derivations to conductor's working directory
     // dnas.file in new-config is updated to new location of DNAs
-    new_config
-        .copy_dnas_to_persistence_dir()
-        .context("failed to copy DNAs to persistence_dir")?;
+    new_config.copy_dnas_to_persistence_dir().with_context(|| {
+        format!(
+            "failed to copy DNAs to persistence_dir ({})",
+            new_config.persistence_dir.display()
+        )
+    })?;
 
     // new-config gets updated with selected values from old-config
     new_config.update_with(&old_config);
