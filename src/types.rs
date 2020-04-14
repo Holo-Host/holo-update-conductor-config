@@ -99,8 +99,8 @@ impl Configuration {
     pub fn update_happ2host(&self) -> Result<()> {
         let happ_urls = self
             .dnas
-            .clone()
-            .into_iter()
+            .iter()
+            .cloned()
             .filter(|dna| dna.holo_hosted)
             .filter_map(|dna| dna.happ_url)
             .collect::<Vec<String>>();
