@@ -106,7 +106,7 @@ impl Configuration {
             .collect::<Vec<String>>();
         let response =
             ureq::post("https://resolver.holohost.net/update/addHost")
-                .send_string(&serde_json::to_string(&happ_urls)?);
+                .send_json(serde_json::to_value(&happ_urls)?);
         if response.error() {
             return Err(anyhow!("request to resolver failed"));
         }
