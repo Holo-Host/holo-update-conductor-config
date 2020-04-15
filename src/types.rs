@@ -104,6 +104,10 @@ impl Configuration {
 
     /// POST Holo-hosted hApp URLs to resolver
     pub fn update_happ2host(&self) -> Result<()> {
+        const RETRIES: usize = 1;
+        const DELAY: u64 = 1000; // ms
+        const URL: &str = "https://resolver.holohost.net/update/addHost";
+
         let happ_urls = self
             .dnas
             .iter()
@@ -111,9 +115,17 @@ impl Configuration {
             .filter(|dna| dna.holo_hosted)
             .filter_map(|dna| dna.happ_url)
             .collect::<Vec<String>>();
-        let response =
-            ureq::post("https://resolver.holohost.net/update/addHost")
-                .send_json(serde_json::to_value(&happ_urls)?);
+        let happ_urls = serde_json::to_value(&happ_urls)?;
+
+        let mut retries = RETRIES;
+        let response = loop {
+            let response = ureq::post(URL).send_json(happ_urls.clone());
+            retries -= 1;
+            if retries <= 0 || response.ok() {
+                break response;
+            }
+        };
+
         if response.error() {
             return Err(anyhow!(
                 "request to resolver failed: {}",
