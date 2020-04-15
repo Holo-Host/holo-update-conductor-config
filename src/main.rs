@@ -41,7 +41,7 @@ fn main(args: Args) -> Result<()> {
     })?;
 
     // new-config gets updated with selected values from old-config
-    new_config.update_with(&old_config);
+    new_config.persist_state_from(&old_config);
 
     // new-config is written into conductor-config.toml file
     let new_config_toml = new_config

@@ -65,7 +65,7 @@ impl Configuration {
     }
 
     /// Update `self` with selected values from `other`.
-    pub fn update_with(&mut self, other: &Self) {
+    pub fn persist_state_from(&mut self, other: &Self) {
         for instance in other.instances.iter() {
             if instance.holo_hosted {
                 self.instances.push(instance.clone());
