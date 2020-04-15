@@ -1,4 +1,5 @@
 mod types;
+mod utils;
 
 use anyhow::{Context, Result};
 use std::io::Read;
@@ -54,6 +55,7 @@ fn main(args: Args) -> Result<()> {
             )
         },
     )?;
+    utils::set_write_permissions(&args.config_path)?;
 
     // (in alpha) KV store HAPP2HOST is updated with values of all holo-hosted hApps
 

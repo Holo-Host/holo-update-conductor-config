@@ -35,6 +35,11 @@ impl Configuration {
 
     /// Copy all DNA files to `persistence_dir` and update their `file` values.
     pub fn copy_dnas_to_persistence_dir(&mut self) -> Result<()> {
+        let dnas_dir = self.persistence_dir.join("dnas");
+        fs::create_dir(&dnas_dir).with_context(|| {
+            format!("failed to create dnas dir ({})", &dnas_dir.display())
+        })?;
+
         for dna in self.dnas.iter_mut() {
             let filename = &dna.file.file_name().with_context(|| {
                 format!(
@@ -43,7 +48,7 @@ impl Configuration {
                     &dna.file.display()
                 )
             })?;
-            let to_path = self.persistence_dir.join(&filename);
+            let to_path = dnas_dir.join(&filename);
 
             fs::copy(&dna.file, &to_path).with_context(|| {
                 format!(
@@ -52,6 +57,8 @@ impl Configuration {
                     &to_path.display()
                 )
             })?;
+
+            crate::utils::set_write_permissions(&to_path)?;
             dna.file = to_path;
         }
         Ok(())
