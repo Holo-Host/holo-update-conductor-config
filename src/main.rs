@@ -25,11 +25,21 @@ fn main(args: Args) -> Result<()> {
     let mut new_config = Configuration::from_toml(&input)
         .context("stdin is not a valid conductor config")?;
 
-    // existing conductor-config.toml is loaded into struct old-config
-    let old_config = fs::read_to_string(&args.config_path)
-        .context("failed to read old config file")?;
-    let old_config = Configuration::from_toml(&old_config)
-        .context("failed to parse old_config")?;
+    if args.config_path.exists() {
+        // existing conductor-config.toml is loaded into struct old-config
+        let old_config =
+            fs::read_to_string(&args.config_path).with_context(|| {
+                format!(
+                    "failed to read old config file at {}",
+                    &args.config_path.display()
+                )
+            })?;
+        let old_config = Configuration::from_toml(&old_config)
+            .context("failed to parse old_config")?;
+
+        // new-config gets updated with selected values from old-config
+        new_config.persist_state_from(&old_config);
+    }
 
     // all the DNAs in new-config are copied from derivations to conductor's working directory
     // dnas.file in new-config is updated to new location of DNAs
@@ -39,9 +49,6 @@ fn main(args: Args) -> Result<()> {
             new_config.persistence_dir.display()
         )
     })?;
-
-    // new-config gets updated with selected values from old-config
-    new_config.persist_state_from(&old_config);
 
     // new-config is written into conductor-config.toml file
     let new_config_toml = new_config
