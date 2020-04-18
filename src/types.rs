@@ -82,8 +82,6 @@ impl Configuration {
         for instance in instances.iter() {
             if instance.holo_hosted && self.has_dna(&instance.dna) {
                 self.attach(&instance.id, "hosted-interface");
-            } else {
-                self.attach(&instance.id, "admin-interface");
             }
         }
     }
