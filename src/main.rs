@@ -1,13 +1,22 @@
 mod types;
+mod utils;
 
 use anyhow::{Context, Result};
 use std::io::Read;
-use std::{env, fs, io};
+use std::path::PathBuf;
+use std::{fs, io};
+use structopt::StructOpt;
 use types::Configuration;
 
-fn main() -> Result<()> {
-    let args: Vec<String> = env::args().collect();
+#[derive(StructOpt, Debug)]
+struct Args {
+    /// Path to existing conductor-config.toml.
+    /// Will be created if not exists.
+    config_path: PathBuf,
+}
 
+#[paw::main]
+fn main(args: Args) -> Result<()> {
     // Holochain settings are read from stdin into a struct new-config
     let mut input = String::new();
     io::stdin()
@@ -16,18 +25,21 @@ fn main() -> Result<()> {
     let mut new_config = Configuration::from_toml(&input)
         .context("stdin is not a valid conductor config")?;
 
-    let config_path = new_config.persistence_dir.join("conductor-config.toml");
+    if args.config_path.exists() {
+        // existing conductor-config.toml is loaded into struct old-config
+        let old_config =
+            fs::read_to_string(&args.config_path).with_context(|| {
+                format!(
+                    "failed to read old config file at {}",
+                    &args.config_path.display()
+                )
+            })?;
+        let old_config = Configuration::from_toml(&old_config)
+            .context("failed to parse old_config")?;
 
-    // existing conductor-config.toml is loaded into struct old-config
-    let old_config = &args[1];
-    let old_config = fs::read_to_string(&old_config).with_context(|| {
-        format!(
-            "failed to read old config file at {}",
-            &config_path.display()
-        )
-    })?;
-    let old_config = Configuration::from_toml(&old_config)
-        .context("failed to parse old_config")?;
+        // new-config gets updated with selected values from old-config
+        new_config.persist_state_from(&old_config);
+    }
 
     // all the DNAs in new-config are copied from derivations to conductor's working directory
     // dnas.file in new-config is updated to new location of DNAs
@@ -38,19 +50,19 @@ fn main() -> Result<()> {
         )
     })?;
 
-    // new-config gets updated with selected values from old-config
-    new_config.update_with(&old_config);
-
     // new-config is written into conductor-config.toml file
     let new_config_toml = new_config
         .to_toml()
         .context("failed to serialize new_config to TOML")?;
-    std::fs::write(&config_path, &new_config_toml).with_context(|| {
-        format!(
-            "failed to write new_config to config_path ({})",
-            &config_path.display()
-        )
-    })?;
+    std::fs::write(&args.config_path, &new_config_toml).with_context(
+        || {
+            format!(
+                "failed to write new_config to config_path ({})",
+                &args.config_path.display()
+            )
+        },
+    )?;
+    utils::set_write_permissions(&args.config_path)?;
 
     // (in alpha) KV store HAPP2HOST is updated with values of all holo-hosted hApps
 

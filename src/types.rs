@@ -35,6 +35,13 @@ impl Configuration {
 
     /// Copy all DNA files to `persistence_dir` and update their `file` values.
     pub fn copy_dnas_to_persistence_dir(&mut self) -> Result<()> {
+        let dnas_dir = self.persistence_dir.join("dnas");
+        if !dnas_dir.is_dir() {
+            fs::create_dir(&dnas_dir).with_context(|| {
+                format!("failed to create dnas dir ({})", &dnas_dir.display())
+            })?;
+        }
+
         for dna in self.dnas.iter_mut() {
             let filename = &dna.file.file_name().with_context(|| {
                 format!(
@@ -43,7 +50,7 @@ impl Configuration {
                     &dna.file.display()
                 )
             })?;
-            let to_path = self.persistence_dir.join(&filename);
+            let to_path = dnas_dir.join(&filename);
 
             fs::copy(&dna.file, &to_path).with_context(|| {
                 format!(
@@ -52,13 +59,15 @@ impl Configuration {
                     &to_path.display()
                 )
             })?;
+
+            crate::utils::set_write_permissions(&to_path)?;
             dna.file = to_path;
         }
         Ok(())
     }
 
     /// Update `self` with selected values from `other`.
-    pub fn update_with(&mut self, other: &Self) {
+    pub fn persist_state_from(&mut self, other: &Self) {
         for instance in other.instances.iter() {
             if instance.holo_hosted {
                 self.instances.push(instance.clone());
@@ -97,6 +106,12 @@ impl Configuration {
 
     /// POST Holo-hosted hApp URLs to resolver
     pub fn update_happ2host(&self) -> Result<()> {
+        use std::{thread, time::Duration};
+
+        let mut retries = 1;
+        let delay = Duration::from_millis(1000);
+        let url = "https://resolver.holohost.net/update/addHost";
+
         let happ_urls = self
             .dnas
             .iter()
@@ -104,9 +119,17 @@ impl Configuration {
             .filter(|dna| dna.holo_hosted)
             .filter_map(|dna| dna.happ_url)
             .collect::<Vec<String>>();
-        let response =
-            ureq::post("https://resolver.holohost.net/update/addHost")
-                .send_json(serde_json::to_value(&happ_urls)?);
+        let happ_urls = serde_json::to_value(&happ_urls)?;
+
+        let response = loop {
+            let response = ureq::post(url).send_json(happ_urls.clone());
+            retries -= 1;
+            if retries <= 0 || response.ok() {
+                break response;
+            }
+            thread::sleep(delay);
+        };
+
         if response.error() {
             return Err(anyhow!(
                 "request to resolver failed: {}",
