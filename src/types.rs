@@ -36,9 +36,11 @@ impl Configuration {
     /// Copy all DNA files to `persistence_dir` and update their `file` values.
     pub fn copy_dnas_to_persistence_dir(&mut self) -> Result<()> {
         let dnas_dir = self.persistence_dir.join("dnas");
-        fs::create_dir(&dnas_dir).with_context(|| {
-            format!("failed to create dnas dir ({})", &dnas_dir.display())
-        })?;
+        if !dnas_dir.is_dir() {
+            fs::create_dir(&dnas_dir).with_context(|| {
+                format!("failed to create dnas dir ({})", &dnas_dir.display())
+            })?;
+        }
 
         for dna in self.dnas.iter_mut() {
             let filename = &dna.file.file_name().with_context(|| {
@@ -104,9 +106,11 @@ impl Configuration {
 
     /// POST Holo-hosted hApp URLs to resolver
     pub fn update_happ2host(&self) -> Result<()> {
-        const RETRIES: usize = 1;
-        const DELAY: u64 = 1000; // ms
-        const URL: &str = "https://resolver.holohost.net/update/addHost";
+        use std::{thread, time::Duration};
+
+        let mut retries = 1;
+        let delay = Duration::from_millis(1000);
+        let url = "https://resolver.holohost.net/update/addHost";
 
         let happ_urls = self
             .dnas
@@ -117,13 +121,13 @@ impl Configuration {
             .collect::<Vec<String>>();
         let happ_urls = serde_json::to_value(&happ_urls)?;
 
-        let mut retries = RETRIES;
         let response = loop {
-            let response = ureq::post(URL).send_json(happ_urls.clone());
+            let response = ureq::post(url).send_json(happ_urls.clone());
             retries -= 1;
             if retries <= 0 || response.ok() {
                 break response;
             }
+            thread::sleep(delay);
         };
 
         if response.error() {
