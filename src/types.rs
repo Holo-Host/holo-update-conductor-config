@@ -46,7 +46,6 @@ impl Configuration {
             if !&dna.holo_hosted {
                 continue;
             }
-
             let filename = &dna.file.file_name().with_context(|| {
                 format!(
                     "dna {} with path {} has no filename",
