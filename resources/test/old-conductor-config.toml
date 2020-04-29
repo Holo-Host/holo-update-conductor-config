@@ -1,0 +1,71 @@
+bridges = []
+persistence_dir = "/var/lib/holochain-conductor/old_persistance_dir"
+signing_service_uri = "http://localhost:9676/old_uri"
+
+[[agents]]
+id = "old-host-agent"
+keystore_file = "/tmp/holo-keystore"
+name = "Old Host Agent"
+public_address = "HcSCJkBBOop64ugtppBhoGM9nIursdfddd5JE4daT8Qfykm9qoQjiOevfk5zefi"
+
+[[dnas]]
+file = "/resources/test/Old_6you9MDEbCvU9bxTA5o7FH7XiMtGZSLdegHiG8D3jpp.dna.json"
+hash = "Old_6you9MDEbCvU9bxTA5o7FH7XiMtGZSLdegHiG8D3jpp"
+id = "old_holofuel"
+
+[[dnas]]
+file = "/resources/test/Old_JmYAuJsH3fLoPDQ1g1L5G9HCWqJUyg9i7Ts3Dyw5V6c.dna.json"
+hash = "Old_JmYAuJsH3fLoPDQ1g1L5G9HCWqJUyg9i7Ts3Dyw5V6c"
+id = "old_servicelogger"
+
+[[instances]]
+agent = "old-host-agent"
+dna = "old_holofuel"
+id = "old_holofuel"
+
+[instances.storage]
+path = "/var/lib/holochain-conductor/old-holofuel-Old_6you9MDEbCvU9bxTA5o7FH7XiMtGZSLdegHiG8D3jpp"
+type = "lmdb"
+
+[[interfaces]]
+admin = true
+id = "old-master-interface"
+
+[interfaces.driver]
+port = 42211
+type = "websocket"
+
+[[interfaces]]
+admin = false
+id = "old-internal-interface"
+
+[interfaces.driver]
+port = 42222
+type = "websocket"
+
+[[interfaces]]
+admin = false
+id = "old-admin-interface"
+
+[interfaces.driver]
+port = 42233
+type = "websocket"
+
+[[interfaces.instances]]
+id = "old-holofuel"
+
+[[interfaces]]
+admin = false
+id = "old-hosted-interface"
+
+[interfaces.driver]
+port = 42244
+type = "websocket"
+
+[logger]
+state_dump = false
+type = "old-info"
+
+[network]
+sim2h_url = "ws://old-public.sim2h.net:9000"
+type = "sim2h"

@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
-#[derive(Deserialize, Serialize, Clone, Default, Debug)]
+#[derive(Deserialize, Serialize, Clone, Default, PartialEq, Debug)]
 pub struct Configuration {
     #[serde(default)]
     dnas: Vec<DnaConfiguration>,
@@ -33,7 +33,7 @@ impl Configuration {
         Ok(string)
     }
 
-    /// Copy all DNA files to `persistence_dir` and update their `file` values.
+    /// Copy only holo-hosted DNA files to `persistence_dir` and update their `file` values.
     pub fn copy_dnas_to_persistence_dir(&mut self) -> Result<()> {
         let dnas_dir = self.persistence_dir.join("dnas");
         if !dnas_dir.is_dir() {
@@ -43,6 +43,10 @@ impl Configuration {
         }
 
         for dna in self.dnas.iter_mut() {
+            if !&dna.holo_hosted {
+                continue;
+            }
+
             let filename = &dna.file.file_name().with_context(|| {
                 format!(
                     "dna {} with path {} has no filename",
@@ -184,24 +188,4 @@ struct InstanceReferenceConfiguration {
     id: String,
     #[serde(flatten)]
     extra: HashMap<String, toml::Value>,
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    // TODO: more examples
-    static CONFIG_TOML: &str = include_str!("../tests/conductor-config.toml");
-
-    #[test]
-    fn test_deserialize() {
-        let config = Configuration::from_toml(CONFIG_TOML)
-            .expect("deserialization failed");
-        assert_eq!(
-            config.persistence_dir,
-            PathBuf::from("/var/lib/holochain-conductor")
-        )
-    }
-
-    // TODO: more tests
 }

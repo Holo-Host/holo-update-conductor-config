@@ -41,7 +41,7 @@ fn main(args: Args) -> Result<()> {
         new_config.persist_state_from(&old_config);
     }
 
-    // all the DNAs in new-config are copied from derivations to conductor's working directory
+    // Holo-hosted DNAs in new-config are copied from derivations to conductor's working directory
     // dnas.file in new-config is updated to new location of DNAs
     new_config.copy_dnas_to_persistence_dir().with_context(|| {
         format!(
@@ -73,3 +73,6 @@ fn main(args: Args) -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests;
