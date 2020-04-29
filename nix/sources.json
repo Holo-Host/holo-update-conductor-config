@@ -5,10 +5,10 @@
         "homepage": "",
         "owner": "Holo-Host",
         "repo": "holo-nixpkgs",
-        "rev": "69ac37d15e17092270f6c26288313fc581a30f55",
-        "sha256": "0bh8v05f26hghy4xcrwxcaxd9sk2gijqm3n7as1md8n46klb0pql",
+        "rev": "567a7926dfb709c04699c3e1344a1fb879afbc64",
+        "sha256": "0bkxqixbs3w9m21nx07lxcs37ld00kyi92xa4sd725r7i6wm35wv",
         "type": "tarball",
-        "url": "https://github.com/Holo-Host/holo-nixpkgs/archive/69ac37d15e17092270f6c26288313fc581a30f55.tar.gz",
+        "url": "https://github.com/Holo-Host/holo-nixpkgs/archive/567a7926dfb709c04699c3e1344a1fb879afbc64.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1c951b1484ebf0efc2024dc5fad252bcefe5369b",
-        "sha256": "1dqia4yqsjd8r0q9ii79im0dyvna3ygks3f3g8pw6frs6nhj7p92",
+        "rev": "519b7d24f43a0ffbbd14f598e2b338dd1283cc2f",
+        "sha256": "0lfxa1z6a0r6ncnli442qchw3mlhh6f8yqnj49gy0x0lpbxgyzza",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/1c951b1484ebf0efc2024dc5fad252bcefe5369b.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/519b7d24f43a0ffbbd14f598e2b338dd1283cc2f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
