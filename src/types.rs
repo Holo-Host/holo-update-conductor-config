@@ -46,6 +46,10 @@ impl Configuration {
             if !&dna.holo_hosted {
                 continue;
             }
+<<<<<<< 895acc78c9f97e08b58f44e05ee84baf317fa2a2
+=======
+
+>>>>>>> add config consistency tests
             let filename = &dna.file.file_name().with_context(|| {
                 format!(
                     "dna {} with path {} has no filename",
