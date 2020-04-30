@@ -47,13 +47,7 @@ impl Configuration {
                 continue;
             }
 
-            let filename = &dna.file.file_name().with_context(|| {
-                format!(
-                    "dna {} with path {} has no filename",
-                    &dna.id,
-                    &dna.file.display()
-                )
-            })?;
+            let filename = dna.hash.to_owned() + ".dna.json";
             let to_path = dnas_dir.join(&filename);
 
             fs::copy(&dna.file, &to_path).with_context(|| {
@@ -154,6 +148,7 @@ impl Configuration {
 struct DnaConfiguration {
     id: String,
     file: PathBuf,
+    hash: String,
     #[serde(default)]
     holo_hosted: bool,
     /// ALPHA: URL of Holo-hosted hApp.
