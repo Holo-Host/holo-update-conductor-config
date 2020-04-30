@@ -41,14 +41,16 @@ fn main(args: Args) -> Result<()> {
         new_config.persist_state_from(&old_config);
     }
 
-    // Holo-hosted DNAs in new-config are copied from derivations to conductor's working directory
+    // Holo-hosted DNAs in new-config are copied from derivations to conductor's working directory and renamed
     // dnas.file in new-config is updated to new location of DNAs
-    new_config.copy_dnas_to_persistence_dir().with_context(|| {
-        format!(
-            "failed to copy DNAs to persistence_dir ({})",
-            new_config.persistence_dir.display()
-        )
-    })?;
+    new_config
+        .copy_dnas_to_persistence_dir(None)
+        .with_context(|| {
+            format!(
+                "failed to copy DNAs to persistence_dir ({})",
+                new_config.persistence_dir.display()
+            )
+        })?;
 
     // new-config is written into conductor-config.toml file
     let new_config_toml = new_config

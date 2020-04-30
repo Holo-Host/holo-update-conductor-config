@@ -9,13 +9,13 @@ name = "Host Agent"
 public_address = "HcSci4GyVQ93ecjpdvDsK5s7W9o3hf7pggw3tJMWmu9frfnpM6Ss5Xx7rjX8mrz"
 
 [[dnas]]
-file = "/nix/store/6xlihn88a2x45nkpdsmkn2jjpsplqvjg-holofuel/Qmd6you9MDEbCvU9bxTA5o7FH7XiMtGZSLdegHiG8D3jpp.dna.json"
+file = "/nix/store/6xlihn88a2x45nkpdsmkn2jjpsplqvjg-holofuel/holofuel.dna.json"
 hash = "Qmd6you9MDEbCvU9bxTA5o7FH7XiMtGZSLdegHiG8D3jpp"
 holo-hosted = false
 id = "holofuel"
 
 [[dnas]]
-file = "resources/test/QmTyogN3tbvBwb1mkeN2zgST2NnNoEU5DWupph214b32EP.dna.json"
+file = "resources/test/holofuel.dna.json"
 hash = "QmTyogN3tbvBwb1mkeN2zgST2NnNoEU5DWupph214b32EP"
 holo-hosted = true
 id = "QmTyogN3tbvBwb1mkeN2zgST2NnNoEU5DWupph214b32EP"

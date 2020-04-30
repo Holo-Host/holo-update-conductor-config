@@ -38,9 +38,6 @@ fn update_from_old_config_smoke() {
     // merge configs
     nix_config.persist_state_from(&old_config);
 
-    // TODO: move dnas
-    // nix_config.copy_dnas_to_persistence_dir().unwrap();
-
     // compare results
     assert_eq!(
         nix_config, expected_config,
@@ -64,9 +61,6 @@ fn update_from_new_config_smoke() {
 
     // merge configs
     nix_config.persist_state_from(&new_config);
-
-    // TODO: move dnas
-    // nix_config.copy_dnas_to_persistence_dir().unwrap();
 
     // compare results
     assert_eq!(

@@ -15,7 +15,7 @@ holo-hosted = false
 id = "holofuel"
 
 [[dnas]]
-file = "resources/test/QmTyogN3tbvBwb1mkeN2zgST2NnNoEU5DWupph214b32EP.dna.json"
+file = "resources/test/holofuel.dna.json"
 hash = "QmTyogN3tbvBwb1mkeN2zgST2NnNoEU5DWupph214b32EP"
 holo-hosted = true
 id = "QmTyogN3tbvBwb1mkeN2zgST2NnNoEU5DWupph214b32EP"
