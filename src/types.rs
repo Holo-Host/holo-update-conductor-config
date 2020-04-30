@@ -34,8 +34,8 @@ impl Configuration {
     }
 
     /// Copy only holo-hosted DNA files to `persistence_dir` and update their `file` values.
-    pub fn copy_dnas_to_persistence_dir(&mut self) -> Result<()> {
-        let dnas_dir = self.persistence_dir.join("dnas");
+    pub fn copy_dnas_to_persistence_dir(&mut self, persistence_dir: Option<PathBuf>) -> Result<()> {
+        let dnas_dir = persistence_dir.unwrap_or(self.persistence_dir.join("dnas"));
         if !dnas_dir.is_dir() {
             fs::create_dir(&dnas_dir).with_context(|| {
                 format!("failed to create dnas dir ({})", &dnas_dir.display())
