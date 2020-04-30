@@ -9,12 +9,12 @@ name = "Old Host Agent"
 public_address = "HcSCJkBBOop64ugtppBhoGM9nIursdfddd5JE4daT8Qfykm9qoQjiOevfk5zefi"
 
 [[dnas]]
-file = "/resources/test/Old_6you9MDEbCvU9bxTA5o7FH7XiMtGZSLdegHiG8D3jpp.dna.json"
+file = "/resources/test/holofuel.dna.json"
 hash = "Old_6you9MDEbCvU9bxTA5o7FH7XiMtGZSLdegHiG8D3jpp"
 id = "old_holofuel"
 
 [[dnas]]
-file = "/resources/test/Old_JmYAuJsH3fLoPDQ1g1L5G9HCWqJUyg9i7Ts3Dyw5V6c.dna.json"
+file = "/resources/test/holofuel.dna.json"
 hash = "Old_JmYAuJsH3fLoPDQ1g1L5G9HCWqJUyg9i7Ts3Dyw5V6c"
 id = "old_servicelogger"
 

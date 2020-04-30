@@ -34,8 +34,12 @@ impl Configuration {
     }
 
     /// Copy only holo-hosted DNA files to `persistence_dir` and update their `file` values.
-    pub fn copy_dnas_to_persistence_dir(&mut self, persistence_dir: Option<PathBuf>) -> Result<()> {
-        let dnas_dir = persistence_dir.unwrap_or(self.persistence_dir.join("dnas"));
+    pub fn copy_dnas_to_persistence_dir(
+        &mut self,
+        persistence_dir: Option<PathBuf>,
+    ) -> Result<()> {
+        let dnas_dir =
+            persistence_dir.unwrap_or(self.persistence_dir.join("dnas"));
         if !dnas_dir.is_dir() {
             fs::create_dir(&dnas_dir).with_context(|| {
                 format!("failed to create dnas dir ({})", &dnas_dir.display())
@@ -183,4 +187,55 @@ struct InstanceReferenceConfiguration {
     id: String,
     #[serde(flatten)]
     extra: HashMap<String, toml::Value>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    use tempfile::TempDir;
+
+    static NIX_CONFIG_TOML: &str =
+        include_str!("../resources/test/nix-conductor-config.toml");
+
+    #[test]
+    /// Test copy_dnas_to_persistence_dir
+    fn copy_dnas_and_update_config() {
+        let mut config = Configuration::from_toml(NIX_CONFIG_TOML).unwrap();
+
+        let tmp_dir = TempDir::new().unwrap();
+        let tmp_path = tmp_dir.path().to_owned();
+
+        // Construct expected paths
+        let expected_hc_dna_path = config.dna_by_id("holofuel").unwrap().file;
+        let mut expected_holo_dna_path = tmp_dir.path().to_owned();
+
+        let expected_holo_dna_file = config
+            .dna_by_id("QmTyogN3tbvBwb1mkeN2zgST2NnNoEU5DWupph214b32EP")
+            .unwrap()
+            .hash
+            + ".dna.json";
+        expected_holo_dna_path.push(&expected_holo_dna_file);
+
+        config.copy_dnas_to_persistence_dir(Some(tmp_path)).unwrap();
+
+        // assert paths
+        assert_eq!(
+            config.dna_by_id("holofuel").unwrap().file,
+            expected_hc_dna_path
+        );
+        assert_eq!(
+            config
+                .dna_by_id("QmTyogN3tbvBwb1mkeN2zgST2NnNoEU5DWupph214b32EP")
+                .unwrap()
+                .file,
+            expected_holo_dna_path
+        );
+
+        let file_num =
+            fs::read_dir(tmp_dir.path().to_owned()).unwrap().count();
+
+        // assert num files
+        assert_eq!(file_num, 1);
+    }
 }
