@@ -69,9 +69,9 @@ fn main(args: Args) -> Result<()> {
     // (in alpha) KV store HAPP2HOST is updated with values of all holo-hosted hApps
 
     // TODO: enable when resolver is up
-    // new_config
-    //     .update_happ2host()
-    //     .context("failed to update HAPP2HOST")?;
+    new_config
+        .update_happ2host()
+        .context("failed to update HAPP2HOST")?;
 
     Ok(())
 }

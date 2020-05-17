@@ -20,6 +20,12 @@ pub struct Configuration {
     extra: HashMap<String, toml::Value>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
+struct Payload {
+    host_id: String,
+    happ_urls: Vec<String>,
+}
+
 impl Configuration {
     // --- ADDED ---
 
@@ -115,6 +121,8 @@ impl Configuration {
         let delay = Duration::from_millis(1000);
         let url = "https://resolver.holohost.net/update/addHost";
 
+        let host_id = crate::utils::get_host_id()?;
+
         let happ_urls = self
             .dnas
             .iter()
@@ -122,10 +130,12 @@ impl Configuration {
             .filter(|dna| dna.holo_hosted)
             .filter_map(|dna| dna.happ_url)
             .collect::<Vec<String>>();
-        let happ_urls = serde_json::to_value(&happ_urls)?;
+
+        let payload = Payload { host_id, happ_urls };
+        let payload = serde_json::to_value(&payload)?;
 
         let response = loop {
-            let response = ureq::post(url).send_json(happ_urls.clone());
+            let response = ureq::post(url).send_json(payload.clone());
             retries -= 1;
             if retries <= 0 || response.ok() {
                 break response;
