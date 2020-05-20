@@ -1,5 +1,7 @@
 use super::*;
 
+use std::env;
+
 static OLD_CONFIG_TOML: &str =
     include_str!("../resources/test/old-conductor-config.toml");
 static NEW_CONFIG_TOML: &str =
@@ -66,5 +68,19 @@ fn update_from_new_config_smoke() {
     assert_eq!(
         nix_config, expected_config,
         "Configuration after an update is different from expected."
+    );
+}
+
+#[test]
+/// test if host_id can be retrieved from HPOS_CONFIG_PATH env var
+fn retrieve_host_id() {
+    let path = env::var("CARGO_MANIFEST_DIR").unwrap();
+    let hpos_config_path = format!("{}/resources/test/hpos-config.json", path);
+    env::set_var("HPOS_CONFIG_PATH", &hpos_config_path);
+
+    let host_id = crate::utils::get_host_id().unwrap();
+    assert_eq!(
+        host_id,
+        String::from("5m5srup6m3b2iilrsqmxu6ydp8p8cr0rdbh4wamupk3s4sxqr5")
     );
 }

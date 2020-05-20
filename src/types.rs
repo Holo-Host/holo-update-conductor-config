@@ -20,6 +20,12 @@ pub struct Configuration {
     extra: HashMap<String, toml::Value>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
+struct Payload {
+    host_id: String,
+    happ_ids: Vec<String>,
+}
+
 impl Configuration {
     // --- ADDED ---
 
@@ -105,8 +111,6 @@ impl Configuration {
         }
     }
 
-    // TODO: remove
-    #[allow(dead_code)]
     /// POST Holo-hosted hApp URLs to resolver
     pub fn update_happ2host(&self) -> Result<()> {
         use std::{thread, time::Duration};
@@ -115,17 +119,21 @@ impl Configuration {
         let delay = Duration::from_millis(1000);
         let url = "https://resolver.holohost.net/update/addHost";
 
-        let happ_urls = self
+        let host_id = crate::utils::get_host_id()?;
+
+        let happ_ids = self
             .dnas
             .iter()
             .cloned()
             .filter(|dna| dna.holo_hosted)
-            .filter_map(|dna| dna.happ_url)
+            .map(|dna| dna.id)
             .collect::<Vec<String>>();
-        let happ_urls = serde_json::to_value(&happ_urls)?;
+
+        let payload = Payload { host_id, happ_ids };
+        let payload = serde_json::to_value(&payload)?;
 
         let response = loop {
-            let response = ureq::post(url).send_json(happ_urls.clone());
+            let response = ureq::post(url).send_json(payload.clone());
             retries -= 1;
             if retries <= 0 || response.ok() {
                 break response;
