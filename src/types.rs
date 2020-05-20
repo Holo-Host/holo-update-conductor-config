@@ -111,8 +111,6 @@ impl Configuration {
         }
     }
 
-    // TODO: remove
-    #[allow(dead_code)]
     /// POST Holo-hosted hApp URLs to resolver
     pub fn update_happ2host(&self) -> Result<()> {
         use std::{thread, time::Duration};
