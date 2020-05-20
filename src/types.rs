@@ -38,8 +38,8 @@ impl Configuration {
         &mut self,
         persistence_dir: Option<PathBuf>,
     ) -> Result<()> {
-        let dnas_dir =
-            persistence_dir.unwrap_or(self.persistence_dir.join("dnas"));
+        let dnas_dir = persistence_dir
+            .unwrap_or_else(|| self.persistence_dir.join("dnas"));
         if !dnas_dir.is_dir() {
             fs::create_dir(&dnas_dir).with_context(|| {
                 format!("failed to create dnas dir ({})", &dnas_dir.display())
@@ -93,17 +93,20 @@ impl Configuration {
     }
 
     fn attach(&mut self, instance_id: &str, interface_id: &str) {
-        self.interfaces
+        if let Some(interface) = self
+            .interfaces
             .iter_mut()
             .find(|interface| interface.id == interface_id)
-            .map(|interface| {
-                interface.instances.push(InstanceReferenceConfiguration {
-                    id: instance_id.to_string(),
-                    ..InstanceReferenceConfiguration::default()
-                })
-            });
+        {
+            interface.instances.push(InstanceReferenceConfiguration {
+                id: instance_id.to_string(),
+                ..InstanceReferenceConfiguration::default()
+            })
+        }
     }
 
+    // TODO: remove
+    #[allow(dead_code)]
     /// POST Holo-hosted hApp URLs to resolver
     pub fn update_happ2host(&self) -> Result<()> {
         use std::{thread, time::Duration};
@@ -143,7 +146,7 @@ impl Configuration {
 
     /// Returns the DNA configuration with the given ID if present
     fn dna_by_id(&self, id: &str) -> Option<DnaConfiguration> {
-        self.dnas.iter().find(|dc| &dc.id == id).cloned()
+        self.dnas.iter().find(|dc| dc.id == id).cloned()
     }
 }
 
