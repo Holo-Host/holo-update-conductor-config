@@ -23,7 +23,7 @@ pub struct Configuration {
 #[derive(Deserialize, Serialize, Debug)]
 struct Payload {
     host_id: String,
-    happ_urls: Vec<String>,
+    happ_ids: Vec<String>,
 }
 
 impl Configuration {
@@ -123,15 +123,15 @@ impl Configuration {
 
         let host_id = crate::utils::get_host_id()?;
 
-        let happ_urls = self
+        let happ_ids = self
             .dnas
             .iter()
             .cloned()
             .filter(|dna| dna.holo_hosted)
-            .filter_map(|dna| dna.happ_url)
+            .map(|dna| dna.id)
             .collect::<Vec<String>>();
 
-        let payload = Payload { host_id, happ_urls };
+        let payload = Payload { host_id, happ_ids };
         let payload = serde_json::to_value(&payload)?;
 
         let response = loop {
