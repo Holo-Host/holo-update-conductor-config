@@ -361,6 +361,7 @@ dependencies = [
  "anyhow",
  "ed25519-dalek",
  "hpos-config-core",
+ "log",
  "paw",
  "serde",
  "serde_json",

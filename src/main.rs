@@ -2,6 +2,7 @@ mod types;
 mod utils;
 
 use anyhow::{Context, Result};
+use log::{debug, info};
 use std::io::Read;
 use std::path::PathBuf;
 use std::{fs, io};
@@ -25,7 +26,10 @@ fn main(args: Args) -> Result<()> {
     let mut new_config = Configuration::from_toml(&input)
         .context("stdin is not a valid conductor config")?;
 
+    info!("Merging conductor_config.toml from current NixOs config and old holochain state");
+
     if args.config_path.exists() {
+        debug!("Reading old holochain state");
         // existing conductor-config.toml is loaded into struct old-config
         let old_config =
             fs::read_to_string(&args.config_path).with_context(|| {
@@ -39,6 +43,8 @@ fn main(args: Args) -> Result<()> {
 
         // new-config gets updated with selected values from old-config
         new_config.persist_state_from(&old_config);
+    } else {
+        debug!("No config file found, creating a new one");
     }
 
     // Holo-hosted DNAs in new-config are copied from derivations to conductor's working directory and renamed

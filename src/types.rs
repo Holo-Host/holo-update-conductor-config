@@ -1,7 +1,8 @@
 //! Most of the structs are copied from
 //! `holochain_core_types` and `holochain_conductor_lib`.
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
+use log::{debug, error};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
@@ -129,8 +130,15 @@ impl Configuration {
             .map(|dna| dna.id)
             .collect::<Vec<String>>();
 
+        if happ_ids.is_empty() {
+            debug!("There are no hosted happs in NixOs config");
+            return Ok(());
+        }
+
         let payload = Payload { host_id, happ_ids };
         let payload = serde_json::to_value(&payload)?;
+
+        debug!("Updating HAPP2HOST with POST payload: {}", payload);
 
         let response = loop {
             let response = ureq::post(url).send_json(payload.clone());
@@ -142,10 +150,7 @@ impl Configuration {
         };
 
         if response.error() {
-            return Err(anyhow!(
-                "request to resolver failed: {}",
-                response.status_line()
-            ));
+            error!("request to resolver failed: {}", response.status_line());
         }
         Ok(())
     }
