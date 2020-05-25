@@ -2,7 +2,7 @@
 //! `holochain_core_types` and `holochain_conductor_lib`.
 
 use anyhow::{Context, Result};
-use log::{debug, error};
+use log::{debug, warn};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
@@ -118,7 +118,7 @@ impl Configuration {
 
         let mut retries = 1;
         let delay = Duration::from_millis(1000);
-        let url = "https://resolver.holohost.net/update/addHost";
+        let url = "https://resolver-dev.holo.host/update/addHost";
 
         let host_id = crate::utils::get_host_id()?;
 
@@ -131,7 +131,7 @@ impl Configuration {
             .collect::<Vec<String>>();
 
         if happ_ids.is_empty() {
-            debug!("There are no hosted happs in NixOs config");
+            debug!("There are no hosted happs in NixOs config, nothing to update in HAPP2HOST");
             return Ok(());
         }
 
@@ -150,7 +150,7 @@ impl Configuration {
         };
 
         if response.error() {
-            error!("request to resolver failed: {}", response.status_line());
+            warn!("request to resolver failed: {}", response.status_line());
         }
         Ok(())
     }
