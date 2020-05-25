@@ -2,6 +2,8 @@ mod types;
 mod utils;
 
 use anyhow::{Context, Result};
+use env_logger::*;
+use log::info;
 use std::io::Read;
 use std::path::PathBuf;
 use std::{fs, io};
@@ -17,6 +19,7 @@ struct Args {
 
 #[paw::main]
 fn main(args: Args) -> Result<()> {
+    env_logger::from_env(Env::default().default_filter_or("info")).init();
     // Holochain settings are read from stdin into a struct new-config
     let mut input = String::new();
     io::stdin()
@@ -26,6 +29,7 @@ fn main(args: Args) -> Result<()> {
         .context("stdin is not a valid conductor config")?;
 
     if args.config_path.exists() {
+        info!("Merging holochain configuration from current Nix and existing conductor-config.toml");
         // existing conductor-config.toml is loaded into struct old-config
         let old_config =
             fs::read_to_string(&args.config_path).with_context(|| {
@@ -39,6 +43,8 @@ fn main(args: Args) -> Result<()> {
 
         // new-config gets updated with selected values from old-config
         new_config.persist_state_from(&old_config);
+    } else {
+        info!("No holochain config file found, creating a new one from Nix configuration");
     }
 
     // Holo-hosted DNAs in new-config are copied from derivations to conductor's working directory and renamed
