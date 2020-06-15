@@ -1208,9 +1208,9 @@ checksum = "60369ef7a31de49bcb3f6ca728d4ba7300d9a1658f94c727d4cab8c8d9f4aece"
 
 [[package]]
 name = "ureq"
-version = "1.1.1"
+version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b777d3fc1e1a5cf8e4675c9016ae748a26ba6a73f4030b9110bb3c8a70499c76"
+checksum = "98effdc4cac848853695a02900faaa9755ff1b86c406f2d6700b22aa515b94a7"
 dependencies = [
  "base64 0.12.0",
  "chunked_transfer",
