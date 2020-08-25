@@ -48,7 +48,7 @@ fn update_from_old_config_smoke() {
 }
 
 #[test]
-/// This test is checking if rebuild from new-style configuration transfers holo-hosted instances correctly
+/// This test is checking if rebuild from new-style configuration transfers holo-hosted instances and hosted agents correctly
 /// New style means config file created by holo-nixpkgs after merge of PR #439
 fn update_from_new_config_smoke() {
     // existing config on HPOS in an old format (without holo_hosted dna and instance property)

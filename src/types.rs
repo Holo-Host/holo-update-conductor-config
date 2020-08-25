@@ -11,6 +11,8 @@ use std::path::PathBuf;
 #[derive(Deserialize, Serialize, Clone, Default, PartialEq, Debug)]
 pub struct Configuration {
     #[serde(default)]
+    agents: Vec<AgentConfiguration>,
+    #[serde(default)]
     dnas: Vec<DnaConfiguration>,
     #[serde(default)]
     instances: Vec<InstanceConfiguration>,
@@ -77,6 +79,11 @@ impl Configuration {
 
     /// Update `self` with selected values from `other`.
     pub fn persist_state_from(&mut self, other: &Self) {
+        for agent in other.agents.iter() {
+            if agent.holo_remote_key.is_some() {
+                self.agents.push(agent.clone())
+            }
+        }
         for instance in other.instances.iter() {
             if instance.holo_hosted {
                 self.instances.push(instance.clone());
@@ -161,6 +168,16 @@ impl Configuration {
     fn dna_by_id(&self, id: &str) -> Option<DnaConfiguration> {
         self.dnas.iter().find(|dc| dc.id == id).cloned()
     }
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug, PartialEq)]
+struct AgentConfiguration {
+    #[serde(default)]
+    holo_remote_key: Option<bool>,
+    id: String,
+    keystore_file: String,
+    name: String,
+    public_address: String,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug, PartialEq)]
