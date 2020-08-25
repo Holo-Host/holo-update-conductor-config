@@ -177,7 +177,7 @@ struct AgentConfiguration {
     id: String,
     keystore_file: String,
     name: String,
-    public_address: String
+    public_address: String,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug, PartialEq)]
