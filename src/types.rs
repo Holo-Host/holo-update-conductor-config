@@ -125,7 +125,7 @@ impl Configuration {
 
         let mut retries = 1;
         let delay = Duration::from_millis(1000);
-        let url = "https://resolver-dev.holo.host/update/addHost";
+        let url = "https://resolver.holo.host/update/addHost";
 
         let host_id = crate::utils::get_host_id()?;
 
