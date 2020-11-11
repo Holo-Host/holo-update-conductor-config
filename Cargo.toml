@@ -14,7 +14,7 @@ hpos-config-core = { git = "https://github.com/Holo-Host/hpos-config", branch = 
 log = "0.4.11"
 paw = "1.0.0"
 serde = { version = "1.0.116", features = ["derive"] }
-serde_json = "1.0.57"
+serde_json = "1.0.59"
 structopt = { version = "0.3.18", features = ["paw"] }
 toml = "0.5.7"
 ureq  = { version = "1.5.0", features = ["json"] }
