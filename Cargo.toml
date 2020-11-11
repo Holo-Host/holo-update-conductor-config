@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 anyhow = "1.0.34"
 ed25519-dalek = { version = "1.0.1", features = ["nightly", "serde"] }
-env_logger = "0.7.1"
+env_logger = "0.8.1"
 hpos-config-core = { git = "https://github.com/Holo-Host/hpos-config", branch = "develop" }
 log = "0.4.11"
 paw = "1.0.0"

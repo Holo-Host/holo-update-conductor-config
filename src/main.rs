@@ -19,7 +19,8 @@ struct Args {
 
 #[paw::main]
 fn main(args: Args) -> Result<()> {
-    env_logger::from_env(Env::default().default_filter_or("info")).init();
+    env_logger::Builder::from_env(Env::default().default_filter_or("info"))
+        .init();
     // Holochain settings are read from stdin into a struct new-config
     let mut input = String::new();
     io::stdin()
