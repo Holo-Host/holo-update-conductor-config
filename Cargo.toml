@@ -13,7 +13,7 @@ env_logger = "0.7.1"
 hpos-config-core = { git = "https://github.com/Holo-Host/hpos-config", branch = "develop" }
 log = "0.4.11"
 paw = "1.0.0"
-serde = { version = "1.0.116", features = ["derive"] }
+serde = { version = "1.0.117", features = ["derive"] }
 serde_json = "1.0.59"
 structopt = { version = "0.3.18", features = ["paw"] }
 toml = "0.5.7"
