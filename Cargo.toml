@@ -15,7 +15,7 @@ log = "0.4.11"
 paw = "1.0.0"
 serde = { version = "1.0.117", features = ["derive"] }
 serde_json = "1.0.59"
-structopt = { version = "0.3.18", features = ["paw"] }
+structopt = { version = "0.3.20", features = ["paw"] }
 toml = "0.5.7"
 ureq  = { version = "1.5.2", features = ["json"] }
 
